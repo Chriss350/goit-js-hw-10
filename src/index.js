@@ -9,7 +9,7 @@ const countryList = document.querySelector('.country-list');
 const countryInfo = document.querySelector('.country-info');
 
 const searchCountry = () => {
-  const userInput = inputSearch.value.trim;
+  const userInput = inputSearch.value.trim();
 
   if (userInput === '') {
     Notiflix.Notify.info('Please type in a country name');
