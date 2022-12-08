@@ -24,6 +24,7 @@ const searchCountry = () => {
           );
           countryList.innerHTML = '';
           countryInfo.innerHTML = '';
+          return;
         }
 
         if (data.length >= 2 && data.length <= 10) {
@@ -35,8 +36,9 @@ const searchCountry = () => {
 
         if ((data.length = 1)) {
           countryList.innerHTML = '';
+          countryInfo.innerHTML = '';
           displayCountryInfo(data);
-          countryList.innerHTML = '';
+
           return;
         }
       })
@@ -44,6 +46,7 @@ const searchCountry = () => {
         Notiflix.Notify.failure('Oops, there is no country with that name');
         countryList.innerHTML = '';
         countryInfo.innerHTML = '';
+        return;
       });
   }
 };
@@ -88,12 +91,5 @@ const displayCountryInfo = data => {
     countryInfo.append(flag, header, pCap, pPop, pLang);
   });
 };
-
-countryList.addEventListener('click', ev => {
-  if (ev.target.nodeName !== 'LI') {
-    return;
-  }
-  inputSearch.value = ev.target.innerText;
-});
 
 inputSearch.addEventListener('input', debounce(searchCountry, DEBOUNCE_DELAY));
