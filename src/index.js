@@ -7,6 +7,7 @@ const DEBOUNCE_DELAY = 300;
 const inputSearch = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
 const countryInfo = document.querySelector('.country-info');
+let userInput;
 
 const searchCountry = () => {
   userInput = inputSearch.value.trim();
