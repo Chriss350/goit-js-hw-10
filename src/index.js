@@ -9,7 +9,7 @@ const countryList = document.querySelector('.country-list');
 const countryInfo = document.querySelector('.country-info');
 
 const searchCountry = () => {
-  const userInput = inputSearch.value.trim();
+  userInput = inputSearch.value.trim();
 
   if (userInput === '') {
     Notiflix.Notify.info('Please type in a country name');
@@ -88,5 +88,12 @@ const displayCountryInfo = data => {
     countryInfo.append(flag, header, pCap, pPop, pLang);
   });
 };
+
+countryList.addEventListener('click', ev => {
+  if (ev.target.nodeName !== 'LI') {
+    return;
+  }
+  inputSearch.value = ev.target.innerText;
+});
 
 inputSearch.addEventListener('input', debounce(searchCountry, DEBOUNCE_DELAY));
