@@ -9,6 +9,9 @@ const countryList = document.querySelector('.country-list');
 const countryInfo = document.querySelector('.country-info');
 let userInput;
 
+//CountryInfo
+let flag, header, pCap, pPop, pLang;
+
 const searchCountry = () => {
   userInput = inputSearch.value.trim();
 
@@ -52,6 +55,23 @@ const searchCountry = () => {
   }
 };
 
+const pickCountry = input => {
+  fetchCountries(input)
+    .then(data => {
+      countryList.innerHTML = '';
+      countryInfo.innerHTML = '';
+      displayCountryInfo(data);
+
+      return;
+    })
+    .catch(error => {
+      Notiflix.Notify.failure('Oops, there is no country with that name');
+      countryList.innerHTML = '';
+      countryInfo.innerHTML = '';
+      return;
+    });
+};
+
 const createCountryList = data => {
   [...data].forEach(res => {
     const list = document.createElement('li');
@@ -68,29 +88,85 @@ const createCountryList = data => {
   });
 };
 
+const createCountryInfoLayout = () => {
+  flag = document.createElement('img');
+  flag.className = 'country-flag';
+  flag.height = '55';
+  flag.width = '90';
+  header = document.createElement('h2');
+  header.className = 'country-name';
+  pCap = document.createElement('p');
+  pPop = document.createElement('p');
+  pLang = document.createElement('p');
+
+  countryInfo.append(flag, header, pCap, pPop, pLang);
+};
+
+const checkData = data => {
+  if (typeof data === 'object') {
+    const newData = data.length >= 1 ? data : `-`;
+    return (data = newData);
+  }
+
+  if (data === undefined) {
+    return '-';
+  }
+
+  return data;
+};
+
 const displayCountryInfo = data => {
+  createCountryInfoLayout();
+
   [...data].forEach(res => {
-    const flag = document.createElement('img');
-    flag.src = res.flag;
-    flag.alt = 'Flag of ' + res.name;
-    flag.height = '110';
-    flag.width = '180';
-    const header = document.createElement('span');
-    const txtheader = document.createTextNode(res.name);
-    header.appendChild(txtheader);
-    const pCap = document.createElement('p');
-    const txtCap = document.createTextNode('Capital: ' + res.capital);
-    pCap.appendChild(txtCap);
-    const pPop = document.createElement('p');
-    const txtPop = document.createTextNode('Population: ' + res.population);
-    pPop.appendChild(txtPop);
-    const pLang = document.createElement('p');
-    const txtLang = document.createTextNode(
-      'Language: ' + res.languages.map(lang => ' ' + lang.name)
-    );
-    pLang.appendChild(txtLang);
-    countryInfo.append(flag, header, pCap, pPop, pLang);
+    flag.src = checkData(res.flag);
+    flag.alt = 'Flag of ' + checkData(res.name);
+
+    const lang = res.languages.length > 1 ? `Languages:` : `Language:`;
+    header.innerHTML = checkData(res.name);
+    pCap.innerHTML = `Capital: ${checkData(res.capital)}`;
+    pPop.innerHTML = `Population:  ${checkData(res.population)}`;
+
+    if (typeof res.languages === 'object') {
+      pLang.innerHTML =
+        lang + checkData(res.languages.map(lang => ' ' + lang.name));
+    } else {
+      pLang.innerHTML = lang + res.languages;
+    }
   });
 };
 
-inputSearch.addEventListener('input', debounce(searchCountry, DEBOUNCE_DELAY));
+const checkInputString = data => {
+  return /^[a-zA-Z\s\W]*$/.test(data);
+};
+
+inputSearch.addEventListener(
+  'input',
+  debounce(
+    e => {
+      if (checkInputString(e.target.value) === true) {
+        searchCountry();
+      } else {
+        Notiflix.Notify.failure('Use letters and special characters');
+      }
+    },
+
+    DEBOUNCE_DELAY
+  )
+);
+
+countryList.addEventListener('click', e => {
+  if (e.target.nodeName === 'LI') {
+    inputSearch.value = e.target.textContent;
+    pickCountry(e.target.textContent);
+    return;
+  }
+
+  if (e.target.nodeName === 'IMG') {
+    inputSearch.value = e.target.parentNode.textContent;
+    pickCountry(e.target.parentNode.textContent);
+
+    return;
+  }
+  return;
+});

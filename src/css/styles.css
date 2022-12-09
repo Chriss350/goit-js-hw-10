@@ -10,6 +10,9 @@ body {
   background-color: #fafafa;
   color: #212121;
   line-height: 1.5;
+  background: #fff
+    radial-gradient(rgba(0, 0, 250, 0.4) 1.5px, rgba(0, 0, 0, 0) 1px) -19px -19px/30px
+    30px;
 }
 
 #search-box {
@@ -36,9 +39,23 @@ body {
   height: auto;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+}
+
+.country-info {
+  display: block;
+  background-color: #fff;
+  max-width: 350px;
 }
 
 .country-list img {
   width: 180px;
   height: 90px;
+}
+
+.country-flag {
+  display: inline;
+}
+.country-name {
+  display: inline;
 }
